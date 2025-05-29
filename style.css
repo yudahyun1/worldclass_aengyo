@@ -81,7 +81,7 @@ nav ul li a:hover {
 main {
   padding-top: 60px;
 }
-#main {
+#main,#about-img {
  padding: 0px;
 }
 section {
@@ -91,7 +91,7 @@ section {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  
 }
 
 h2 {
@@ -240,55 +240,47 @@ section.visible {
 
 .slider {
   position: relative;
-  width: 100vw;
-  height: 20rem;
+  width: 100%;
+  height: 50vh;
+  
   overflow: hidden;
-  margin: 0;
-  padding: 0;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .slide-container {
-  display: flex;
-  width: 300%;
-  height: 100%;
-  transition: transform 0.5s ease-in-out;
-}
-.slide-container img{
   width: 100%;
+  height: 100%;
 }
 
 .slide {
-  width: 33.333%;
+  position: absolute;
+  width: 100%;
   height: 100%;
-  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  object-fit: cover;
 }
 
-/* 화살표 버튼 스타일 제거 */
-.prev-btn, .next-btn {
-  display: none;
+.slide.active {
+  opacity: 1;
 }
 
 .dots {
   position: absolute;
-  bottom: 40px;  /* 위치 조정 */
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 15px;
-  z-index: 10;  /* 이미지 위에 표시되도록 */
+  gap: 10px;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.5);
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 .dot.active {
-  background: white;
+  background-color: white;
 } 

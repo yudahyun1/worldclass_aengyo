@@ -38,95 +38,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const slideContainer = document.querySelector('.slide-container');
-  const slides = document.querySelectorAll('.slide');
-  const prevBtn = document.querySelector('.prev-btn');
-  const nextBtn = document.querySelector('.next-btn');
-  const dots = document.querySelectorAll('.dot');
+  // 각 슬라이더에 대한 설정
+  const sliders = document.querySelectorAll('.slider');
   
-  let currentSlide = 0;
-  let isDragging = false;
-  let startPos = 0;
-  let currentTranslate = 0;
-  let prevTranslate = 0;
-
-  // 마우스/터치 이벤트 핸들러 추가
-  slideContainer.addEventListener('mousedown', dragStart);
-  slideContainer.addEventListener('touchstart', dragStart);
-  slideContainer.addEventListener('mousemove', drag);
-  slideContainer.addEventListener('touchmove', drag);
-  slideContainer.addEventListener('mouseup', dragEnd);
-  slideContainer.addEventListener('touchend', dragEnd);
-  slideContainer.addEventListener('mouseleave', dragEnd);
-
-  function dragStart(event) {
-    isDragging = true;
-    startPos = getPositionX(event);
-    slideContainer.style.transition = 'none';
-  }
-
-  function drag(event) {
-    if (!isDragging) return;
-    event.preventDefault();
-    const currentPosition = getPositionX(event);
-    const diff = currentPosition - startPos;
-    currentTranslate = prevTranslate + diff;
-    slideContainer.style.transform = `translateX(${currentTranslate}px)`;
-  }
-
-  function dragEnd() {
-    isDragging = false;
-    const movedBy = currentTranslate - prevTranslate;
+  sliders.forEach((slider, sliderIndex) => {
+    const slides = slider.querySelectorAll('.slide');
+    const dots = slider.querySelectorAll('.dot');
+    let currentSlide = 0;
     
-    if (movedBy < -100 && currentSlide < slides.length - 1) {
-      currentSlide += 1;
-    }
-    if (movedBy > 100 && currentSlide > 0) {
-      currentSlide -= 1;
-    }
+    // 첫 번째 슬라이드와 닷 활성화
+    slides[0].classList.add('active');
+    dots[0].classList.add('active');
     
-    updateSlider();
-  }
-
-  function getPositionX(event) {
-    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
-  }
-
-  // 슬라이더 업데이트 함수 수정
-  function updateSlider() {
-    slideContainer.style.transition = 'transform 0.3s ease-out';
-    currentTranslate = -currentSlide * slideContainer.clientWidth / 3;
-    prevTranslate = currentTranslate;
-    slideContainer.style.transform = `translateX(${currentTranslate}px)`;
-    
-    // 도트 업데이트
+    // 닷 클릭 이벤트
     dots.forEach((dot, index) => {
-      if (index === currentSlide) {
-        dot.classList.add('active');
-      } else {
-        dot.classList.remove('active');
-      }
+      dot.addEventListener('click', () => {
+        setSlide(index);
+      });
     });
-  }
-  
-  // 도트 클릭 이벤트
-  dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
+    
+    // 자동 슬라이드 설정
+    setInterval(() => {
+      nextSlide();
+    }, 3000);
+    
+    // 슬라이드 설정 함수
+    function setSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
       currentSlide = index;
-      updateSlider();
-    });
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+    
+    // 다음 슬라이드로 이동
+    function nextSlide() {
+      const next = (currentSlide + 1) % slides.length;
+      setSlide(next);
+    }
   });
-  
-  // 자동 슬라이드
-  function autoSlide() {
-    currentSlide = (currentSlide + 1) % slides.length;
-    updateSlider();
-  }
-  
-  // 5초마다 자동 슬라이드
-  const slideInterval = setInterval(autoSlide, 5000);
-  
-  // 초기 상태 설정
-  dots[0].classList.add('active');
-  updateSlider();
 }); 
