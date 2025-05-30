@@ -253,7 +253,7 @@ section.visible {
 .slider {
   position: relative;
   width: 100%;
-  height: 400px;
+   height: calc((100vw * 432) / 733);
   overflow: hidden;
 }
 
@@ -266,7 +266,8 @@ section.visible {
 
 .slide {
   min-width: 100%;
-  height: 100%;
+  max-width: 100%;
+  height: calc((100vw * 432) / 733);
   opacity: 1;
   object-fit: cover;
 }
