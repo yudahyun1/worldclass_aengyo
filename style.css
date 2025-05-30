@@ -208,6 +208,18 @@ p {
   .menu-btn.active span:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -6px);
   }
+
+  .cocktail-slider {
+    height: 400px;
+  }
+
+  .cocktail-slide img {
+    height: 300px;
+  }
+
+  .cocktail-slide p {
+    font-size: 1.2rem;
+  }
 }
 
 /* 애니메이션 효과 */
@@ -287,7 +299,10 @@ section.visible {
 .cocktail-slider {
   position: relative;
   width: 100%;
+  max-width: 800px;
+  height: 500px;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .cocktail-slide-container {

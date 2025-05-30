@@ -92,16 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 터치 이벤트 리스너 추가
   cocktailContainer.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
-  });
+  }, { passive: false });
 
   cocktailContainer.addEventListener('touchmove', (e) => {
     e.preventDefault(); // 스크롤 방지
-  });
+  }, { passive: false });
 
   cocktailContainer.addEventListener('touchend', (e) => {
     touchEndX = e.changedTouches[0].clientX;
     handleSwipe();
-  });
+  }, { passive: false });
 
   // 스와이프 처리 함수
   function handleSwipe() {
@@ -109,14 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const diff = touchStartX - touchEndX;
 
     if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0 && cocktailCurrentSlide < cocktailSlides.length - 1) {
+      if (diff > 0) {
         // 왼쪽으로 스와이프
-        goToSlide(cocktailCurrentSlide + 1);
-      } else if (diff < 0 && cocktailCurrentSlide > 0) {
+        if (cocktailCurrentSlide < cocktailSlides.length - 1) {
+          goToSlide(cocktailCurrentSlide + 1);
+          resetInterval();
+        }
+      } else {
         // 오른쪽으로 스와이프
-        goToSlide(cocktailCurrentSlide - 1);
+        if (cocktailCurrentSlide > 0) {
+          goToSlide(cocktailCurrentSlide - 1);
+          resetInterval();
+        }
       }
-      resetInterval();
     }
   }
 

@@ -14,6 +14,14 @@
     .slide-container {
       touch-action: pan-y pinch-zoom; /* 터치 동작 활성화 */
     }
+    /* 더블클릭 확대 방지 추가 */
+    img {
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html {
+      touch-action: manipulation;
+    }
   </style>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
