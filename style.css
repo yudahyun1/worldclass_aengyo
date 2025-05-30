@@ -258,21 +258,17 @@ section.visible {
 }
 
 .slide-container {
+  display: flex;
   width: 100%;
   height: 100%;
+  transition: transform 0.5s ease-in-out;
 }
 
 .slide {
-  position: absolute;
-  width: 100%;
+  min-width: 100%;
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-  object-fit: cover;
-}
-
-.slide.active {
   opacity: 1;
+  object-fit: cover;
 }
 
 .dots {

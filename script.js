@@ -212,9 +212,8 @@ class Slider {
   }
 
   init() {
-    // 첫 번째 슬라이드 활성화
-    this.slides[0].classList.add('active');
-    this.dots[0].classList.add('active');
+    // 첫 번째 슬라이드 위치 설정
+    this.container.style.transform = 'translateX(0)';
 
     // 터치 이벤트 설정
     this.container.addEventListener('touchstart', (e) => {
@@ -256,11 +255,10 @@ class Slider {
   }
 
   setSlide(index) {
-    this.slides[this.currentSlide].classList.remove('active');
     this.dots[this.currentSlide].classList.remove('active');
     this.currentSlide = index;
-    this.slides[this.currentSlide].classList.add('active');
     this.dots[this.currentSlide].classList.add('active');
+    this.container.style.transform = `translateX(-${this.currentSlide * 100}%)`;
   }
 
   nextSlide() {
