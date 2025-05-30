@@ -85,6 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const nextArrow = document.querySelector('.next-arrow');
   let cocktailCurrentSlide = 0;
 
+  // 터치 이벤트 관련 변수
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  // 터치 이벤트 리스너 추가
+  cocktailContainer.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  });
+
+  cocktailContainer.addEventListener('touchmove', (e) => {
+    e.preventDefault(); // 스크롤 방지
+  });
+
+  cocktailContainer.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    handleSwipe();
+  });
+
+  // 스와이프 처리 함수
+  function handleSwipe() {
+    const swipeThreshold = 50; // 스와이프 감지 임계값
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && cocktailCurrentSlide < cocktailSlides.length - 1) {
+        // 왼쪽으로 스와이프
+        goToSlide(cocktailCurrentSlide + 1);
+      } else if (diff < 0 && cocktailCurrentSlide > 0) {
+        // 오른쪽으로 스와이프
+        goToSlide(cocktailCurrentSlide - 1);
+      }
+      resetInterval();
+    }
+  }
+
   // 초기 활성화 닷과 화살표
   updateSlideState();
 
