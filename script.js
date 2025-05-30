@@ -188,4 +188,120 @@ document.addEventListener('DOMContentLoaded', () => {
   cocktailDots.forEach(dot => {
     dot.addEventListener('click', resetInterval);
   });
-}); 
+});
+
+class Slider {
+  constructor(slider, options = {}) {
+    this.slider = slider;
+    this.container = slider.querySelector('.slide-container');
+    this.slides = slider.querySelectorAll('.slide');
+    this.dots = slider.querySelectorAll('.dot');
+    this.currentSlide = 0;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    this.interval = null;
+    
+    // 기본 옵션
+    this.options = {
+      autoplay: options.autoplay ?? true,
+      interval: options.interval ?? 3000,
+      swipeThreshold: options.swipeThreshold ?? 50
+    };
+
+    this.init();
+  }
+
+  init() {
+    // 첫 번째 슬라이드 활성화
+    this.slides[0].classList.add('active');
+    this.dots[0].classList.add('active');
+
+    // 터치 이벤트 설정
+    this.container.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    this.container.addEventListener('touchend', (e) => {
+      this.touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }, { passive: true });
+
+    // 닷 클릭 이벤트
+    this.dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        this.setSlide(index);
+        this.resetInterval();
+      });
+    });
+
+    // 자동 재생 시작
+    if (this.options.autoplay) {
+      this.startAutoplay();
+    }
+  }
+
+  handleSwipe() {
+    const diff = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(diff) > this.options.swipeThreshold) {
+      if (diff > 0) {
+        // 왼쪽으로 스와이프
+        this.nextSlide();
+      } else {
+        // 오른쪽으로 스와이프
+        this.prevSlide();
+      }
+      this.resetInterval();
+    }
+  }
+
+  setSlide(index) {
+    this.slides[this.currentSlide].classList.remove('active');
+    this.dots[this.currentSlide].classList.remove('active');
+    this.currentSlide = index;
+    this.slides[this.currentSlide].classList.add('active');
+    this.dots[this.currentSlide].classList.add('active');
+  }
+
+  nextSlide() {
+    const next = (this.currentSlide + 1) % this.slides.length;
+    this.setSlide(next);
+  }
+
+  prevSlide() {
+    const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    this.setSlide(prev);
+  }
+
+  startAutoplay() {
+    this.interval = setInterval(() => this.nextSlide(), this.options.interval);
+  }
+
+  resetInterval() {
+    if (this.options.autoplay) {
+      clearInterval(this.interval);
+      this.startAutoplay();
+    }
+  }
+}
+
+// DOM이 로드된 후 슬라이더 초기화
+document.addEventListener('DOMContentLoaded', () => {
+  // 일반 슬라이더 초기화
+  document.querySelectorAll('.slider').forEach(slider => {
+    new Slider(slider);
+  });
+
+  // 칵테일 슬라이더 초기화
+  const cocktailSlider = document.querySelector('.cocktail-slider');
+  if (cocktailSlider) {
+    initCocktailSlider(cocktailSlider);
+  }
+
+  // ... existing code (메뉴 버튼 등) ...
+});
+
+// 칵테일 슬라이더 초기화 함수는 그대로 유지
+function initCocktailSlider(slider) {
+  // ... existing cocktail slider code ...
+} 
