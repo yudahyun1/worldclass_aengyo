@@ -22,6 +22,33 @@
     html {
       touch-action: manipulation;
     }
+    .language-selector {
+      position: relative;
+    }
+    
+    .language-dropdown {
+      display: none;
+      position: absolute;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 10px;
+      z-index: 1000;
+    }
+    
+    .language-dropdown a {
+      display: block;
+      padding: 5px 10px;
+      text-decoration: none;
+      color: black;
+    }
+    
+    .language-selector:hover .language-dropdown {
+      display: block;
+    }
+
+    .language-selector span {
+      cursor: pointer;
+    }
   </style>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -42,6 +69,13 @@
         <li><a href="#story">STORY</a></li>
         <li><a href="#cocktail">COCKTAIL</a></li>
         <li><a href="#contact">CONTACT</a></li>
+        <li class="language-selector">
+          <span>LANGUAGE</span>
+          <div class="language-dropdown">
+            <a href="#" data-lang="ko">한국어</a>
+            <a href="#" data-lang="en">English</a>
+          </div>
+        </li>
       </ul>
     </nav>
   </header>
