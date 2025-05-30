@@ -23,7 +23,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./  # index.html이 이 경로에 있어야 함
+          path: './'   # 혹은 필요에 따라 './public' 등 정확한 폴더 경로
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
