@@ -1,15 +1,17 @@
-# .github/workflows/deploy.yml
-
 name: Deploy static HTML to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때마다 실행
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
     steps:
       - name: Checkout source code
@@ -21,7 +23,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./  # 정적 HTML 파일이 위치한 폴더 (예: index.html 이 여기에 있어야 함)
+          path: ./  # index.html이 이 경로에 있어야 함
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
