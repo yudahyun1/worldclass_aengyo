@@ -283,4 +283,98 @@ section.visible {
 
 .dot.active {
   background-color: white;
+}
+
+.cocktail-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.cocktail-slide-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.cocktail-slide {
+  min-width: 100%;
+  text-align: center;
+}
+
+.cocktail-slide img {
+  max-width: 80%;
+  height: 500px;
+  margin-bottom: 20px;
+}
+
+.cocktail-slide p {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.cocktail-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.cocktail-dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.cocktail-dot.active {
+  background-color: #333;
+}
+
+.cocktail-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 20px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.cocktail-arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.prev-arrow {
+  left: 20px;
+}
+
+.next-arrow {
+  right: 20px;
+}
+
+.cocktail-arrow.hidden {
+  display: none;
 } 
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.social-icon {
+  color: #333;
+  font-size: 2rem;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #666;
+}

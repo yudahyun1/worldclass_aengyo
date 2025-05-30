@@ -77,4 +77,75 @@ document.addEventListener('DOMContentLoaded', () => {
       setSlide(next);
     }
   });
+
+  const cocktailContainer = document.querySelector('.cocktail-slide-container');
+  const cocktailSlides = document.querySelectorAll('.cocktail-slide');
+  const cocktailDots = document.querySelectorAll('.cocktail-dot');
+  const prevArrow = document.querySelector('.prev-arrow');
+  const nextArrow = document.querySelector('.next-arrow');
+  let cocktailCurrentSlide = 0;
+
+  // 초기 활성화 닷과 화살표
+  updateSlideState();
+
+  // 슬라이드 상태 업데이트 함수
+  function updateSlideState() {
+    // 닷 업데이트
+    cocktailDots.forEach(dot => dot.classList.remove('active'));
+    cocktailDots[cocktailCurrentSlide].classList.add('active');
+    
+    // 슬라이드 이동
+    cocktailContainer.style.transform = `translateX(-${cocktailCurrentSlide * 100}%)`;
+    
+    // 화살표 표시/숨김
+    prevArrow.classList.toggle('hidden', cocktailCurrentSlide === 0);
+    nextArrow.classList.toggle('hidden', cocktailCurrentSlide === cocktailSlides.length - 1);
+  }
+
+  // 슬라이드 이동 함수
+  function goToSlide(slideIndex) {
+    cocktailCurrentSlide = slideIndex;
+    updateSlideState();
+  }
+
+  // 이전 슬라이드로 이동
+  prevArrow.addEventListener('click', () => {
+    if (cocktailCurrentSlide > 0) {
+      goToSlide(cocktailCurrentSlide - 1);
+    }
+  });
+
+  // 다음 슬라이드로 이동
+  nextArrow.addEventListener('click', () => {
+    if (cocktailCurrentSlide < cocktailSlides.length - 1) {
+      goToSlide(cocktailCurrentSlide + 1);
+    }
+  });
+
+  // 닷 클릭 이벤트
+  cocktailDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      goToSlide(index);
+    });
+  });
+
+  // 자동 슬라이드 (선택사항)
+  let slideInterval = setInterval(autoSlide, 5000);
+
+  function autoSlide() {
+    let nextSlide = (cocktailCurrentSlide + 1) % cocktailSlides.length;
+    goToSlide(nextSlide);
+  }
+
+  // 화살표나 닷 클릭시 자동 슬라이드 멈춤
+  function resetInterval() {
+    clearInterval(slideInterval);
+    slideInterval = setInterval(autoSlide, 5000);
+  }
+
+  prevArrow.addEventListener('click', resetInterval);
+  nextArrow.addEventListener('click', resetInterval);
+  cocktailDots.forEach(dot => {
+    dot.addEventListener('click', resetInterval);
+  });
 }); 
