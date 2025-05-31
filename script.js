@@ -11,7 +11,209 @@ const observer = new IntersectionObserver(handleIntersection, {
   threshold: 0.1
 });
 
-// DOM이 완전히 로드된 후 실행되도록 수정
+class MainSlider {
+  constructor(slider) {
+    this.slider = slider;
+    this.slides = slider.querySelectorAll('.slide');
+    this.dots = slider.querySelectorAll('.dot');
+    this.slideContainer = slider.querySelector('.slide-container');
+    this.currentSlide = 0;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    this.autoplayInterval = null;
+
+    this.init();
+  }
+
+  init() {
+    // 터치 이벤트 초기화
+    this.initTouchEvents();
+    
+    // 첫 번째 슬라이드 상태 설정
+    this.updateSlideState();
+    
+    // 닷 클릭 이벤트
+    this.dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        this.setSlide(index);
+        this.resetInterval();
+      });
+    });
+    
+    // 자동 슬라이드 시작
+    this.startAutoplay();
+  }
+
+  initTouchEvents() {
+    this.slideContainer.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.touches[0].clientX;
+    }, { passive: false });
+
+    this.slideContainer.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
+    this.slideContainer.addEventListener('touchend', (e) => {
+      this.touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }, { passive: false });
+  }
+
+  handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        this.nextSlide();
+      } else {
+        this.prevSlide();
+      }
+      this.resetInterval();
+    }
+  }
+
+  updateSlideState() {
+    // 닷 업데이트
+    this.dots.forEach(dot => dot.classList.remove('active'));
+    this.dots[this.currentSlide].classList.add('active');
+    
+    // 슬라이드 이동
+    this.slideContainer.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+  }
+
+  setSlide(index) {
+    this.currentSlide = index;
+    this.updateSlideState();
+  }
+
+  nextSlide() {
+    const next = (this.currentSlide + 1) % this.slides.length;
+    this.setSlide(next);
+  }
+
+  prevSlide() {
+    const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    this.setSlide(prev);
+  }
+
+  startAutoplay() {
+    this.autoplayInterval = setInterval(() => this.nextSlide(), 3000);
+  }
+
+  resetInterval() {
+    clearInterval(this.autoplayInterval);
+    this.startAutoplay();
+  }
+}
+
+class CocktailSlider {
+  constructor(slider) {
+    this.slider = slider;
+    this.container = slider.querySelector('.cocktail-slide-container');
+    this.slides = slider.querySelectorAll('.cocktail-slide');
+    this.dots = slider.querySelectorAll('.cocktail-dot');
+    this.prevArrow = slider.querySelector('.prev-arrow');
+    this.nextArrow = slider.querySelector('.next-arrow');
+    this.currentSlide = 0;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+    this.autoplayInterval = null;
+
+    this.init();
+  }
+
+  init() {
+    this.initTouchEvents();
+    this.initArrowEvents();
+    this.initDotEvents();
+    this.updateSlideState();
+    this.startAutoplay();
+  }
+
+  initTouchEvents() {
+    this.container.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.touches[0].clientX;
+    }, { passive: false });
+
+    this.container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
+    this.container.addEventListener('touchend', (e) => {
+      this.touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }, { passive: false });
+  }
+
+  initArrowEvents() {
+    this.prevArrow.addEventListener('click', () => {
+      if (this.currentSlide > 0) {
+        this.goToSlide(this.currentSlide - 1);
+        this.resetInterval();
+      }
+    });
+
+    this.nextArrow.addEventListener('click', () => {
+      if (this.currentSlide < this.slides.length - 1) {
+        this.goToSlide(this.currentSlide + 1);
+        this.resetInterval();
+      }
+    });
+  }
+
+  initDotEvents() {
+    this.dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        this.goToSlide(index);
+        this.resetInterval();
+      });
+    });
+  }
+
+  handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0 && this.currentSlide < this.slides.length - 1) {
+        this.goToSlide(this.currentSlide + 1);
+      } else if (diff < 0 && this.currentSlide > 0) {
+        this.goToSlide(this.currentSlide - 1);
+      }
+      this.resetInterval();
+    }
+  }
+
+  updateSlideState() {
+    this.dots.forEach(dot => dot.classList.remove('active'));
+    this.dots[this.currentSlide].classList.add('active');
+    
+    this.container.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+    
+    this.prevArrow.classList.toggle('hidden', this.currentSlide === 0);
+    this.nextArrow.classList.toggle('hidden', this.currentSlide === this.slides.length - 1);
+  }
+
+  goToSlide(index) {
+    this.currentSlide = index;
+    this.updateSlideState();
+  }
+
+  startAutoplay() {
+    this.autoplayInterval = setInterval(() => {
+      const nextSlide = (this.currentSlide + 1) % this.slides.length;
+      this.goToSlide(nextSlide);
+    }, 5000);
+  }
+
+  resetInterval() {
+    clearInterval(this.autoplayInterval);
+    this.startAutoplay();
+  }
+}
+
+// DOM이 완전히 로드된 후 실행
 document.addEventListener('DOMContentLoaded', () => {
   // 섹션 애니메이션 관찰
   document.querySelectorAll('section').forEach(section => {
@@ -38,157 +240,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 각 슬라이더에 대한 설정
-  const sliders = document.querySelectorAll('.slider');
-  
-  sliders.forEach((slider, sliderIndex) => {
-    const slides = slider.querySelectorAll('.slide');
-    const dots = slider.querySelectorAll('.dot');
-    let currentSlide = 0;
-    
-    // 첫 번째 슬라이드와 닷 활성화
-    slides[0].classList.add('active');
-    dots[0].classList.add('active');
-    
-    // 닷 클릭 이벤트
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        setSlide(index);
-      });
-    });
-    
-    // 자동 슬라이드 설정
-    setInterval(() => {
-      nextSlide();
-    }, 3000);
-    
-    // 슬라이드 설정 함수
-    function setSlide(index) {
-      slides[currentSlide].classList.remove('active');
-      dots[currentSlide].classList.remove('active');
-      currentSlide = index;
-      slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
-    }
-    
-    // 다음 슬라이드로 이동
-    function nextSlide() {
-      const next = (currentSlide + 1) % slides.length;
-      setSlide(next);
-    }
+  // 모든 일반 슬라이더 초기화
+  document.querySelectorAll('.slider').forEach(slider => {
+    new MainSlider(slider);
   });
 
-  const cocktailContainer = document.querySelector('.cocktail-slide-container');
-  const cocktailSlides = document.querySelectorAll('.cocktail-slide');
-  const cocktailDots = document.querySelectorAll('.cocktail-dot');
-  const prevArrow = document.querySelector('.prev-arrow');
-  const nextArrow = document.querySelector('.next-arrow');
-  let cocktailCurrentSlide = 0;
-
-  // 터치 이벤트 관련 변수
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  // 터치 이벤트 리스너 추가
-  cocktailContainer.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-  }, { passive: false });
-
-  cocktailContainer.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // 스크롤 방지
-  }, { passive: false });
-
-  cocktailContainer.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].clientX;
-    handleSwipe();
-  }, { passive: false });
-
-  // 스와이프 처리 함수
-  function handleSwipe() {
-    const swipeThreshold = 50; // 스와이프 감지 임계값
-    const diff = touchStartX - touchEndX;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // 왼쪽으로 스와이프
-        if (cocktailCurrentSlide < cocktailSlides.length - 1) {
-          goToSlide(cocktailCurrentSlide + 1);
-          resetInterval();
-        }
-      } else {
-        // 오른쪽으로 스와이프
-        if (cocktailCurrentSlide > 0) {
-          goToSlide(cocktailCurrentSlide - 1);
-          resetInterval();
-        }
-      }
-    }
+  // 칵테일 슬라이더 초기화
+  const cocktailSlider = document.querySelector('.cocktail-slider');
+  if (cocktailSlider) {
+    new CocktailSlider(cocktailSlider);
   }
 
-  // 초기 활성화 닷과 화살표
-  updateSlideState();
-
-  // 슬라이드 상태 업데이트 함수
-  function updateSlideState() {
-    // 닷 업데이트
-    cocktailDots.forEach(dot => dot.classList.remove('active'));
-    cocktailDots[cocktailCurrentSlide].classList.add('active');
-    
-    // 슬라이드 이동
-    cocktailContainer.style.transform = `translateX(-${cocktailCurrentSlide * 100}%)`;
-    
-    // 화살표 표시/숨김
-    prevArrow.classList.toggle('hidden', cocktailCurrentSlide === 0);
-    nextArrow.classList.toggle('hidden', cocktailCurrentSlide === cocktailSlides.length - 1);
-  }
-
-  // 슬라이드 이동 함수
-  function goToSlide(slideIndex) {
-    cocktailCurrentSlide = slideIndex;
-    updateSlideState();
-  }
-
-  // 이전 슬라이드로 이동
-  prevArrow.addEventListener('click', () => {
-    if (cocktailCurrentSlide > 0) {
-      goToSlide(cocktailCurrentSlide - 1);
-    }
-  });
-
-  // 다음 슬라이드로 이동
-  nextArrow.addEventListener('click', () => {
-    if (cocktailCurrentSlide < cocktailSlides.length - 1) {
-      goToSlide(cocktailCurrentSlide + 1);
-    }
-  });
-
-  // 닷 클릭 이벤트
-  cocktailDots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-      goToSlide(index);
-    });
-  });
-
-  // 자동 슬라이드 (선택사항)
-  let slideInterval = setInterval(autoSlide, 5000);
-
-  function autoSlide() {
-    let nextSlide = (cocktailCurrentSlide + 1) % cocktailSlides.length;
-    goToSlide(nextSlide);
-  }
-
-  // 화살표나 닷 클릭시 자동 슬라이드 멈춤
-  function resetInterval() {
-    clearInterval(slideInterval);
-    slideInterval = setInterval(autoSlide, 5000);
-  }
-
-  prevArrow.addEventListener('click', resetInterval);
-  nextArrow.addEventListener('click', resetInterval);
-  cocktailDots.forEach(dot => {
-    dot.addEventListener('click', resetInterval);
-  });
-
+  // 다국어 지원
   const translations = {
     ko: {
       about: {
@@ -234,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#contact p').textContent = translations[lang].contact.subtitle;
   }
 
+  // 언어 선택 이벤트
   document.querySelectorAll('.language-dropdown a').forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
@@ -241,153 +305,4 @@ document.addEventListener('DOMContentLoaded', () => {
       updateContent(lang);
     });
   });
-
-  const languageSelector = document.querySelector('.language-selector');
-  const languageDropdown = document.querySelector('.language-dropdown');
-
-  // LANGUAGE 버튼 클릭 이벤트
-  const languageButton = languageSelector.querySelector('a');
-  languageButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    languageDropdown.classList.toggle('show');
-  });
-
-  // 각 언어 옵션 클릭 이벤트
-  languageDropdown.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const lang = this.getAttribute('data-lang');
-      updateContent(lang);
-      languageDropdown.classList.remove('show');
-    });
-  });
-
-  // 문서 클릭 이벤트 - 메뉴 외부 클릭시에만 닫기
-  document.addEventListener('click', function(e) {
-    const isClickInside = languageSelector.contains(e.target);
-    if (!isClickInside && languageDropdown.classList.contains('show')) {
-      languageDropdown.classList.remove('show');
-    }
-  });
-
-  // 드롭다운 자체 클릭 이벤트 - 버블링 방지
-  languageDropdown.addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
-});
-
-class Slider {
-  constructor(slider, options = {}) {
-    this.slider = slider;
-    this.container = slider.querySelector('.slide-container');
-    this.slides = slider.querySelectorAll('.slide');
-    this.dots = slider.querySelectorAll('.dot');
-    this.currentSlide = 0;
-    this.touchStartX = 0;
-    this.touchEndX = 0;
-    this.interval = null;
-    
-    // 기본 옵션
-    this.options = {
-      autoplay: options.autoplay ?? true,
-      interval: options.interval ?? 3000,
-      swipeThreshold: options.swipeThreshold ?? 50
-    };
-
-    this.init();
-  }
-
-  init() {
-    // 첫 번째 슬라이드 위치 설정
-    this.container.style.transform = 'translateX(0)';
-
-    // 터치 이벤트 설정
-    this.container.addEventListener('touchstart', (e) => {
-      this.touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    this.container.addEventListener('touchend', (e) => {
-      this.touchEndX = e.changedTouches[0].clientX;
-      this.handleSwipe();
-    }, { passive: true });
-
-    // 닷 클릭 이벤트
-    this.dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        this.setSlide(index);
-        this.resetInterval();
-      });
-    });
-
-    // 자동 재생 시작
-    if (this.options.autoplay) {
-      this.startAutoplay();
-    }
-  }
-
-  handleSwipe() {
-    const diff = this.touchStartX - this.touchEndX;
-
-    if (Math.abs(diff) > this.options.swipeThreshold) {
-      if (diff > 0) {
-        // 왼쪽으로 스와이프
-        this.nextSlide();
-      } else {
-        // 오른쪽으로 스와이프
-        this.prevSlide();
-      }
-      this.resetInterval();
-    }
-  }
-
-  setSlide(index) {
-    this.dots[this.currentSlide].classList.remove('active');
-    this.currentSlide = index;
-    this.dots[this.currentSlide].classList.add('active');
-    this.container.style.transform = `translateX(-${this.currentSlide * 100}%)`;
-  }
-
-  nextSlide() {
-    const next = (this.currentSlide + 1) % this.slides.length;
-    this.setSlide(next);
-  }
-
-  prevSlide() {
-    const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-    this.setSlide(prev);
-  }
-
-  startAutoplay() {
-    this.interval = setInterval(() => this.nextSlide(), this.options.interval);
-  }
-
-  resetInterval() {
-    if (this.options.autoplay) {
-      clearInterval(this.interval);
-      this.startAutoplay();
-    }
-  }
-}
-
-// DOM이 로드된 후 슬라이더 초기화
-document.addEventListener('DOMContentLoaded', () => {
-  // 일반 슬라이더 초기화
-  document.querySelectorAll('.slider').forEach(slider => {
-    new Slider(slider);
-  });
-
-  // 칵테일 슬라이더 초기화
-  const cocktailSlider = document.querySelector('.cocktail-slider');
-  if (cocktailSlider) {
-    initCocktailSlider(cocktailSlider);
-  }
-
-  // ... existing code (메뉴 버튼 등) ...
-});
-
-// 칵테일 슬라이더 초기화 함수는 그대로 유지
-function initCocktailSlider(slider) {
-  // ... existing cocktail slider code ...
-} 
+}); 
