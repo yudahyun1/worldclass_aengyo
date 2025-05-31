@@ -84,6 +84,14 @@ main {
 #main,#about-img {
  padding: 0px;
 }
+#story,#about{
+  height: 700px;
+}
+
+}
+#contact{
+  height: 500px;
+}
 section {
   
   padding: 2rem;
@@ -131,96 +139,6 @@ p {
   margin-top: 2rem;
 }
 
-/* 반응형 디자인 */
-@media (min-width: 768px) {
-  nav ul li a {
-    font-size: 1rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-  }
-
-  p {
-    font-size: 1rem;
-  }
-
-  section {
-    padding: 4rem;
-  }
-}
-
-@media (max-width: 768px) {
-  header {
-    padding: 10px 15px;
-    position: relative;
-  }
-
-  .menu-btn {
-    display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-  }
-
-  .logo {
-    padding: 10px;
-    margin: 0 auto;
-  }
-
-  .logo img {
-    height: 40px;
-  }
-
-  .nav-menu {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background-color: #fff;
-    padding-top: 60px;
-    transition: 0.3s;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  }
-
-  .nav-menu.active {
-    left: 0;
-  }
-
-  .nav-menu ul {
-    flex-direction: column;
-    padding: 0 20px;
-  }
-
-  .nav-menu li {
-    margin: 15px 0;
-  }
-
-  .menu-btn.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-
-  .menu-btn.active span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .menu-btn.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
-  }
-
-  .cocktail-slider {
-    height: 400px;
-  }
-
-  .cocktail-slide img {
-    height: 300px;
-  }
-
-  .cocktail-slide p {
-    font-size: 1.2rem;
-  }
-}
 
 /* 애니메이션 효과 */
 section {
@@ -389,4 +307,102 @@ section.visible {
 
 .social-icon:hover {
   color: #666;
+}
+
+
+/* 반응형 디자인 */
+@media (min-width: 768px) {
+  nav ul li a {
+    font-size: 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  section {
+    padding: 4rem;
+  }
+  .slider,.slide{
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 10px 15px;
+    position: relative;
+  }
+
+  .menu-btn {
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+  }
+
+  .logo {
+    padding: 10px;
+    margin: 0 auto;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .nav-menu {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #fff;
+    padding-top: 60px;
+    transition: 0.3s;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .nav-menu ul {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+
+  .nav-menu li {
+    margin: 15px 0;
+  }
+
+  .menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .menu-btn.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  .cocktail-slider {
+    height: 400px;
+  }
+
+  .cocktail-slide img {
+    height: 300px;
+  }
+
+  .cocktail-slide p {
+    font-size: 1.2rem;
+  }
+  .slider,.slide{
+    height: 400px;
+  }
 }
