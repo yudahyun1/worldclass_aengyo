@@ -51,13 +51,18 @@ header {
   width: 30px;
   height: 24px;
   padding: 0;
+  position: fixed;
+  top: 25px;
+  left: 20px;
   z-index: 1001;
+  background: none;
+  border: none;
 }
 
 .menu-btn span {
   display: block;
   width: 100%;
-  height: 3px;
+  height: 2px;
   background-color: #333;
   margin: 5px 0;
   transition: all 0.3s ease;
@@ -168,20 +173,61 @@ section.visible {
   transform: translateY(0);
 }
 
+.nav-menu {
+  position: fixed;
+  left: -100%;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.98);
+  padding-top: 80px;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.nav-menu.active {
+  left: 0;
+}
+
 .nav-menu ul {
   display: flex;
+  flex-direction: column;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
 .nav-menu li {
-  margin: 0 15px;
+  margin: 15px 30px;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s ease;
 }
 
+.nav-menu.active li {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nav-menu.active li:nth-child(1) { transition-delay: 0.1s; }
+.nav-menu.active li:nth-child(2) { transition-delay: 0.2s; }
+.nav-menu.active li:nth-child(3) { transition-delay: 0.3s; }
+.nav-menu.active li:nth-child(4) { transition-delay: 0.4s; }
+.nav-menu.active li:nth-child(5) { transition-delay: 0.5s; }
+
 .nav-menu a {
+  font-size: 1.1rem;
+  color: #333;
   text-decoration: none;
-  color: #000;
+  transition: color 0.3s ease;
+  display: block;
+  padding: 10px 0;
+}
+
+.nav-menu a:hover {
+  color: #666;
 }
 
 .slider {
@@ -261,6 +307,14 @@ section.visible {
   font-weight: 500;
 }
 
+.cocktail-slide p .en {
+  display: block;
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.3rem;
+  font-weight: 400;
+}
+
 .cocktail-dots {
   display: flex;
   justify-content: center;
@@ -284,19 +338,23 @@ section.visible {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: none;
   border: none;
-  padding: 15px 20px;
   cursor: pointer;
-  z-index: 10;
-  font-size: 20px;
-  border-radius: 50%;
-  transition: background 0.3s;
+  z-index: 2;
+  padding: 10px;
+  transition: all 0.3s ease;
 }
 
-.cocktail-arrow:hover {
-  background: rgba(0, 0, 0, 0.8);
+.cocktail-arrow i {
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.cocktail-arrow:hover i {
+  color: #ffffff;
+  transform: scale(1.1);
 }
 
 .prev-arrow {
@@ -308,8 +366,9 @@ section.visible {
 }
 
 .cocktail-arrow.hidden {
-  display: none;
-} 
+  opacity: 0;
+  pointer-events: none;
+}
 
 .social-icons {
   display: flex;
@@ -353,19 +412,15 @@ section.visible {
 
 @media (max-width: 768px) {
   header {
-    padding: 10px 15px;
-    position: relative;
+    padding: 10px 20px;
+    justify-content: center;
   }
 
   .menu-btn {
     display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
   }
 
   .logo {
-    padding: 10px;
     margin: 0 auto;
   }
 
@@ -373,57 +428,12 @@ section.visible {
     height: 40px;
   }
 
-  .nav-menu {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background-color: rgba(255, 255, 255, 0.98);
-    padding-top: 80px;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
-  }
-
-  .nav-menu.active {
-    left: 0;
-  }
-
-  .nav-menu ul {
+  nav ul {
     flex-direction: column;
-    padding: 0 20px;
   }
 
-  .nav-menu li {
-    margin: 15px 0;
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .nav-menu.active li {
-    opacity: 1;
-    transform: translateX(0);
-    transition-delay: 0.2s;
-  }
-
-  .nav-menu.active li:nth-child(2) { transition-delay: 0.3s; }
-  .nav-menu.active li:nth-child(3) { transition-delay: 0.4s; }
-  .nav-menu.active li:nth-child(4) { transition-delay: 0.5s; }
-  .nav-menu.active li:nth-child(5) { transition-delay: 0.6s; }
-
-  .menu-btn.active span:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-  }
-
-  .menu-btn.active span:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-
-  .menu-btn.active span:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
+  nav ul li {
+    margin: 10px 0;
   }
 
   .cocktail-slider {
@@ -437,6 +447,11 @@ section.visible {
   .cocktail-slide p {
     font-size: 1.2rem;
   }
+  
+  .cocktail-slide p .en {
+    font-size: 0.9rem;
+  }
+
   .slider,.slide{
     height: 400px;
   }
@@ -486,140 +501,100 @@ section.visible {
 }
 
 .menu-btn.active span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(7px) rotate(45deg);
 }
 
 .menu-btn.active span:nth-child(2) {
   opacity: 0;
-  transform: scaleX(0);
 }
 
 .menu-btn.active span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* 언어 선택 메뉴 스타일 */
-.language-menu {
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  visibility: hidden;
-}
-
-.language-menu.active {
-  left: 0;
-  opacity: 1;
-  visibility: visible;
-}
-
-.language-list {
-  list-style: none;
-  padding: 0;
-  text-align: center;
-}
-
-.language-list li {
-  margin: 30px 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.language-menu.active .language-list li {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.language-menu.active .language-list li:nth-child(1) { transition-delay: 0.2s; }
-.language-menu.active .language-list li:nth-child(2) { transition-delay: 0.3s; }
-.language-menu.active .language-list li:nth-child(3) { transition-delay: 0.4s; }
-
-.language-list a {
-  font-size: 1.2rem;
-  color: #333;
-  text-decoration: none;
-  letter-spacing: 0.05em;
+.language-selector {
   position: relative;
-  transition: color 0.3s ease;
-  font-weight: 500;
+  display: inline-block;
 }
 
-.language-list a:hover {
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #333;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  padding: 10px;
+  font-family: inherit;
+}
+
+.lang-btn i {
+  font-size: 16px;
+  color: #333;
+}
+
+.lang-btn:hover i {
   color: #666;
 }
 
-.language-list a::after {
-  content: '';
+.language-selector.active .lang-btn i {
+  transform: rotate(180deg);
+}
+
+.language-dropdown {
   position: absolute;
-  bottom: -5px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: #333;
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 8px 0;
+  min-width: 120px;
+  display: none;
+  z-index: 1000;
 }
 
-.language-list a:hover::after {
-  width: 100%;
+.language-selector.active .language-dropdown {
+  display: block;
 }
 
-.language-close {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.language-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
-.language-close::before,
-.language-close::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: #333;
-  transform-origin: center;
-  transition: transform 0.3s ease;
-}
-
-.language-close::before {
-  transform: rotate(45deg);
-}
-
-.language-close::after {
-  transform: rotate(-45deg);
-}
-
-.language-close:hover::before,
-.language-close:hover::after {
-  background-color: #666;
+.language-dropdown a:hover {
+  background-color: #f5f5f5;
 }
 
 @media (max-width: 768px) {
-  .language-list a {
-    font-size: 20px;
+  .language-dropdown {
+    position: static;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 10px;
+    width: 100%;
   }
 
-  .language-close {
-    top: 20px;
-    right: 20px;
-    width: 30px;
-    height: 30px;
+  .language-dropdown a {
+    padding: 8px 30px;
+  }
+
+  .nav-menu.active .language-dropdown {
+    display: none;
+  }
+
+  .nav-menu.active .language-selector.active .language-dropdown {
+    display: block;
   }
 }
 

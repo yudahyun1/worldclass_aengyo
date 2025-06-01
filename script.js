@@ -21,8 +21,10 @@ class MainSlider {
     this.touchStartX = 0;
     this.touchEndX = 0;
     this.autoplayInterval = null;
+    this.isVisible = false;
 
     this.init();
+    this.setupVisibilityObserver();
   }
 
   init() {
@@ -36,12 +38,27 @@ class MainSlider {
     this.dots.forEach((dot, index) => {
       dot.addEventListener('click', () => {
         this.setSlide(index);
-        this.resetInterval();
+        if (this.isVisible) {
+          this.resetInterval();
+        }
       });
     });
-    
-    // 자동 슬라이드 시작
-    this.startAutoplay();
+  }
+
+  setupVisibilityObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.isVisible = true;
+          this.startAutoplay();
+        } else {
+          this.isVisible = false;
+          this.stopAutoplay();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(this.slider);
   }
 
   initTouchEvents() {
@@ -98,12 +115,23 @@ class MainSlider {
   }
 
   startAutoplay() {
-    this.autoplayInterval = setInterval(() => this.nextSlide(), 3000);
+    if (!this.autoplayInterval) {
+      this.autoplayInterval = setInterval(() => this.nextSlide(), 3000);
+    }
+  }
+
+  stopAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
   }
 
   resetInterval() {
-    clearInterval(this.autoplayInterval);
-    this.startAutoplay();
+    this.stopAutoplay();
+    if (this.isVisible) {
+      this.startAutoplay();
+    }
   }
 }
 
@@ -119,8 +147,10 @@ class CocktailSlider {
     this.touchStartX = 0;
     this.touchEndX = 0;
     this.autoplayInterval = null;
+    this.isVisible = false;
 
     this.init();
+    this.setupVisibilityObserver();
   }
 
   init() {
@@ -128,7 +158,22 @@ class CocktailSlider {
     this.initArrowEvents();
     this.initDotEvents();
     this.updateSlideState();
-    this.startAutoplay();
+  }
+
+  setupVisibilityObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.isVisible = true;
+          this.startAutoplay();
+        } else {
+          this.isVisible = false;
+          this.stopAutoplay();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(this.slider);
   }
 
   initTouchEvents() {
@@ -201,15 +246,26 @@ class CocktailSlider {
   }
 
   startAutoplay() {
-    this.autoplayInterval = setInterval(() => {
-      const nextSlide = (this.currentSlide + 1) % this.slides.length;
-      this.goToSlide(nextSlide);
-    }, 5000);
+    if (!this.autoplayInterval) {
+      this.autoplayInterval = setInterval(() => {
+        const nextSlide = (this.currentSlide + 1) % this.slides.length;
+        this.goToSlide(nextSlide);
+      }, 5000);
+    }
+  }
+
+  stopAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
   }
 
   resetInterval() {
-    clearInterval(this.autoplayInterval);
-    this.startAutoplay();
+    this.stopAutoplay();
+    if (this.isVisible) {
+      this.startAutoplay();
+    }
   }
 }
 
@@ -230,12 +286,44 @@ document.addEventListener('DOMContentLoaded', () => {
       navMenu.classList.toggle('active');
     });
 
-    // 메뉴 항목 클릭시 메뉴 닫기
-    const menuLinks = navMenu.querySelectorAll('a');
+    // 메뉴 항목 클릭시 메뉴 닫기 (language 선택기 제외)
+    const menuLinks = navMenu.querySelectorAll('a:not(.lang-btn)');
     menuLinks.forEach(link => {
       link.addEventListener('click', () => {
         menuBtn.classList.remove('active');
         navMenu.classList.remove('active');
+      });
+    });
+  }
+
+  // 언어 선택 기능
+  const langSelector = document.querySelector('.language-selector');
+  const langBtn = document.querySelector('.lang-btn');
+
+  if (langBtn && langSelector) {
+    langBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      langSelector.classList.toggle('active');
+    });
+
+    // 다른 곳 클릭시 언어 메뉴 닫기
+    document.addEventListener('click', (e) => {
+      if (!langSelector.contains(e.target)) {
+        langSelector.classList.remove('active');
+      }
+    });
+
+    // 언어 선택 이벤트
+    const langLinks = document.querySelectorAll('.language-dropdown a');
+    langLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const lang = e.target.dataset.lang;
+        updateContent(lang);
+        // 언어 선택 후에도 메뉴는 열린 상태 유지
+        langSelector.classList.remove('active');
       });
     });
   }
@@ -251,58 +339,121 @@ document.addEventListener('DOMContentLoaded', () => {
     new CocktailSlider(cocktailSlider);
   }
 
-  // 다국어 지원
+  // 언어 변경 관련 코드
   const translations = {
     ko: {
+      nav: {
+        about: "소개",
+        story: "우리들의 이야기",
+        cocktail: "칵테일",
+        contact: "문의"
+      },
       about: {
-        title: 'ABOUT',
-        subtitle: '\'계속 걸어가며 길을 찾아 떠나자\'',
-        description: '사람은 평생 평균 1억 5천만 걸음을 걷지만, 다른 곳으로 향하는 사람은 얼마나 될까요?<br>우리는 익숙한 길에서 벗어나 모두가 걸을 수 있는 새로운 길을 찾아 만듭니다.<br>함께 나누는 순간들을 더욱 다양하고, 풍요롭게 그리고 발전을 위해.'
+        title: "소개",
+        subtitle: "계속 걸어가며 길을 찾아 떠나자",
+        description: "사람은 평생 평균 1억 5천만 걸음을 걷지만, 다른 곳으로 향하는 사람은 얼마나 될까요?<br>우리는 익숙한 길에서 벗어나 모두가 걸을 수 있는 새로운 길을 찾아 만듭니다.<br>함께 나누는 순간들을 더욱 다양하고, 풍요롭게 그리고 발전을 위해."
       },
       story: {
-        title: '우리들의 이야기',
-        description: '전 세계를 돌아다니며 식재료와 식문화에 영감을 받아 우리만의 길을 찾으며<br>화려한 테크닉보다는 그 나라의 문화를 이해하고 지속가능성까지 생각하며<br>우리들만의 이야기를 다양한 칵테일로 표현합니다.'
+        title: "우리들의 이야기",
+        description: "전 세계를 돌아다니며 식재료와 식문화에 영감을 받아 우리만의 길을 찾으며<br>화려한 테크닉보다는 그 나라의 문화를 이해하고 지속가능성까지 생각하며<br>우리들만의 이야기를 다양한 칵테일로 표현합니다."
       },
+      cocktail: "칵테일",
       contact: {
-        title: 'CONTACT',
-        subtitle: '소셜에서 우리와 함께 같이 걸어보세요'
+        title: "문의",
+        subtitle: "소셜에서 우리와 함께 같이 걸어보세요"
+      },
+      menu: {
+        "하와이안피자": "하와이안피자",
+        "루꼴라샐러드": "루꼴라샐러드",
+        "크리스마스푸딩": "크리스마스푸딩",
+        "미나리무침": "미나리무침",
+        "비빔밥": "비빔밥",
+        "폰즈소바": "폰즈소바"
       }
     },
     en: {
+      nav: {
+        about: "ABOUT",
+        story: "Our Story",
+        cocktail: "COCKTAIL",
+        contact: "CONTACT"
+      },
       about: {
-        title: 'ABOUT',
-        subtitle: 'Let\'s keep walking and find our path',
-        description: 'People walk an average of 150 million steps in their lifetime, but how many venture in different directions?<br>We create new paths that everyone can walk on, breaking away from the familiar.<br>For more diverse and enriching moments we share together, and for progress.'
+        title: "ABOUT",
+        subtitle: "Let's keep walking and embark on a journey to find the way",
+        description: "On average, a person takes 150 million steps in their lifetime, but how many of those steps actually lead us somewhere new?<br>We step away from familiar paths to discover and create new ones that are open to all.<br>Here's to making the moments we share more diverse and more enriching… and a big step forward."
       },
       story: {
-        title: 'Our Story',
-        description: 'Traveling around the world, we find our own way inspired by ingredients and food culture.<br>Rather than fancy techniques, we understand the culture of each country and consider sustainability<br>to express our story through various cocktails.'
+        title: "Our Story",
+        description: "In search of our own unique path, we travel around the world drawing inspiration from local ingredients and culinary cultures.<br>Rather than relying on flashy techniques, we focus on understanding each place's culture and embracing sustainability along the way.<br>With this perspective, we express our story through a variety of cocktails."
       },
+      cocktail: "COCKTAIL",
       contact: {
-        title: 'CONTACT',
-        subtitle: 'Walk with us on social media'
+        title: "CONTACT",
+        subtitle: "Keep Walking with us on social"
+      },
+      menu: {
+        "하와이안피자": "Hawaiian Pizza",
+        "루꼴라샐러드": "Arugula Salad",
+        "크리스마스푸딩": "Christmas Pudding",
+        "미나리무침": "Minari Muchim",
+        "비빔밥": "Bibimbap",
+        "폰즈소바": "Ponzu Soba"
       }
     }
   };
 
+  let currentLang = 'ko';
+
   function updateContent(lang) {
-    document.querySelector('#about h2').textContent = translations[lang].about.title;
-    document.querySelector('#about p:nth-child(2)').innerHTML = translations[lang].about.subtitle;
-    document.querySelector('#about p:nth-child(3)').innerHTML = translations[lang].about.description;
+    currentLang = lang;
     
+    // 네비게이션 메뉴 업데이트
+    document.querySelector('a[href="#about"]').textContent = translations[lang].nav.about;
+    document.querySelector('a[href="#story"]').textContent = translations[lang].nav.story;
+    document.querySelector('a[href="#cocktail"]').textContent = translations[lang].nav.cocktail;
+    document.querySelector('a[href="#contact"]').textContent = translations[lang].nav.contact;
+
+    // About 섹션 업데이트
+    document.querySelector('#about h2').textContent = translations[lang].about.title;
+    const aboutPs = document.querySelectorAll('#about p');
+    aboutPs[0].innerHTML = translations[lang].about.subtitle;
+    aboutPs[1].innerHTML = translations[lang].about.description;
+
+    // Story 섹션 업데이트
     document.querySelector('#story h2').textContent = translations[lang].story.title;
     document.querySelector('#story p').innerHTML = translations[lang].story.description;
-    
+
+    // Cocktail 섹션 업데이트
+    document.querySelector('#cocktail h2').textContent = translations[lang].nav.cocktail;
+
+    // Contact 섹션 업데이트
     document.querySelector('#contact h2').textContent = translations[lang].contact.title;
     document.querySelector('#contact p').textContent = translations[lang].contact.subtitle;
+
+    // 칵테일 메뉴 업데이트
+    const cocktailSlides = document.querySelectorAll('.cocktail-slide');
+    const imageMap = {
+      'a.jpeg': '하와이안피자',
+      'b.jpeg': '루꼴라샐러드',
+      'c.jpeg': '크리스마스푸딩',
+      'd.png': '미나리무침',
+      'e.jpeg': '비빔밥',
+      'f.jpeg': '폰즈소바'
+    };
+
+    cocktailSlides.forEach(slide => {
+      const img = slide.querySelector('img');
+      const p = slide.querySelector('p');
+      const filename = img.src.split('/').pop();
+      const koreanName = imageMap[filename];
+      if (koreanName && translations[lang].menu[koreanName]) {
+        p.textContent = translations[lang].menu[koreanName];
+        img.alt = translations[lang].menu[koreanName] + (lang === 'ko' ? ' 칵테일' : ' Cocktail');
+      }
+    });
   }
 
-  // 언어 선택 이벤트
-  document.querySelectorAll('.language-dropdown a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const lang = this.getAttribute('data-lang');
-      updateContent(lang);
-    });
-  });
+  // 초기 언어 설정
+  updateContent('ko');
 }); 
