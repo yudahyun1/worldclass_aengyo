@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       about: {
         title: "소개",
-        subtitle: "계속 걸어가며 길을 찾아 떠나자",
+        subtitle: "'계속 걸어가며 길을 찾아 떠나자'",
         description: "사람은 평생 평균 1억 5천만 걸음을 걷지만, 다른 곳으로 향하는 사람은 얼마나 될까요?<br>우리는 익숙한 길에서 벗어나 모두가 걸을 수 있는 새로운 길을 찾아 만듭니다.<br>함께 나누는 순간들을 더욱 다양하고, 풍요롭게 그리고 발전을 위해."
       },
       story: {
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       about: {
         title: "ABOUT",
-        subtitle: "Let's keep walking and embark on a journey to find the way",
+        subtitle: "'Let's keep walking and embark on a journey to find the way'",
         description: "On average, a person takes 150 million steps in their lifetime, but how many of those steps actually lead us somewhere new?<br>We step away from familiar paths to discover and create new ones that are open to all.<br>Here's to making the moments we share more diverse and more enriching… and a big step forward."
       },
       story: {
